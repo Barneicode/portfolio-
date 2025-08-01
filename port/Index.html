@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Your Name</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Pre-loading animation */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .holo-loader {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        
+        .holo-loader::before,
+        .holo-loader::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: rotate 2s linear infinite;
+        }
+        
+        .holo-loader::after {
+            border-color: var(--secondary-color);
+            animation-direction: reverse;
+            animation-duration: 1.5s;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg) scale(1); opacity: 1; }
+            50% { transform: rotate(180deg) scale(1.2); opacity: 0.7; }
+            100% { transform: rotate(360deg) scale(1); opacity: 1; }
+        }
+        
+        /* Custom cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.1s ease;
+            box-shadow: 0 0 15px var(--glow-color);
+        }
+        
+        .cursor-trail {
+            width: 10px;
+            height: 10px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9997;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Scroll animations */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Glitch effect for hero text */
+        .glitch {
+            position: relative;
+            animation: glitch 2s infinite;
+        }
+        
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+        
+        /* Pulsing button */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 15px rgba(0, 255, 255, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(0, 255, 255, 0.8); }
+            100% { box-shadow: 0 0 15px rgba(0, 255, 255, 0.4); }
+        }
+        
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 6s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
+
+        /* 3D Globe Styles */
+        #globe-container {
+            position: absolute;
+            top: 50%;
+            right: 5%;
+            transform: translateY(-50%);
+            width: 300px;
+            height: 300px;
+            z-index: 1;
+            pointer-events: auto;
+            transition: all 0.3s ease;
+        }
+
+        #globe-container:hover {
+            filter: brightness(1.2);
+        }
+
+        @media (max-width: 1200px) {
+            #globe-container {
+                width: 250px;
+                height: 250px;
+                right: 3%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #globe-container {
+                position: relative;
+                top: auto;
+                right: auto;
+                transform: none;
+                margin: 2rem auto;
+                width: 200px;
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #globe-container {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        /* Logo Styles */
+        .nav-logo {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #0080cc;
+            text-decoration: none;
+            letter-spacing: 1.5px;
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            position: relative;
+            border: 1px solid #0066aa;
+            padding: 0.4rem 0.8rem;
+            border-radius: 2px;
+            background: rgba(0, 100, 170, 0.05);
+            box-shadow: 
+                0 0 0 1px rgba(0, 102, 170, 0.2),
+                inset 0 0 0 1px rgba(0, 128, 204, 0.1);
+        }
+
+        .nav-logo:hover {
+            color: #0099dd;
+            border-color: #0080cc;
+            background: rgba(0, 128, 204, 0.15);
+            box-shadow: 
+                0 0 0 2px rgba(0, 128, 204, 0.3),
+                inset 0 0 0 1px rgba(0, 153, 221, 0.2);
+        }
+
+        /* Social Links Styling */
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
+            background: rgba(0, 100, 170, 0.1);
+            border: 1px solid #0066aa;
+            border-radius: 4px;
+            color: #0080cc;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .social-link:hover {
+            background: rgba(0, 128, 204, 0.2);
+            border-color: #0080cc;
+            color: #0099dd;
+            transform: translateY(-1px);
+        }
+
+        .social-icon {
+            width: 18px;
+            height: 18px;
+            color: #0080cc;
+            transition: color 0.2s ease;
+        }
+
+        .social-link:hover .social-icon {
+            color: #0099dd;
+        }
+
+        @media (max-width: 768px) {
+            .nav-logo {
+                font-size: 1.5rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-logo {
+                font-size: 1.3rem;
+                padding: 0.3rem 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sticky Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#hero" class="nav-logo">BarniDev</a>
+            <ul class="nav-menu">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="hero" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title glitch" id="hero-title">Welcome to My Portfolio</h1>
+                <p class="hero-subtitle" id="hero-subtitle"></p>
+                <p class="hero-description">
+                    Passionate about creating innovative digital solutions that make a difference. 
+                    Specializing in modern web technologies and cutting-edge development practices.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#projects" class="btn btn-primary pulse">View My Work</a>
+                    <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- About Me Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title scroll-animate">About Me</h2>
+            <div class="about-content">
+                <div class="about-text scroll-animate">
+                    <h3>Hello, I'm Barnabas labata</h3>
+                    <p>
+                        I'm a passionate front-end developer creating 
+                        digital experiences that users love. My journey in tech started with curiosity 
+                        and has evolved into a career focused on building scalable, beautiful applications.
+                    </p>
+                    <p>
+                        I believe in  clean, maintainable code and staying up-to-date with the 
+                        latest industry trends. When I'm not coding, you can find me exploring new technologies, 
+                        contributing to open-source projects, or sharing knowledge with the developer community.
+                        <br><br>
+                        📧 Contact me at: <a href="mailto:labatabarnabas@gmail.com" style="color: var(--accent-color); text-decoration: none;">labatabarnabas@gmail.com</a>
+                    </p>
+
+                </div>
+                <div class="about-image scroll-animate">
+                    <div class="image-placeholder">
+                        <img src="profile-image.png" alt="Barnabas labata" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills">
+        <div class="container">
+            <h2 class="section-title scroll-animate">Skills & Technologies</h2>
+            <div class="skills-grid">
+                <div class="skill-category scroll-animate">
+                    <h3>Frontend</h3>
+                    <ul class="skill-list">
+                        <li class="skill-item-wrapper">
+                            <span class="skill-name">HTML</span>
+                            <div class="skill-percentage-bar">
+                                <div class="skill-percentage-fill" data-percentage="95"></div>
+                            </div>
+                        </li>
+                        <li class="skill-item-wrapper">
+                            <span class="skill-name">CSS</span>
+                            <div class="skill-percentage-bar">
+                                <div class="skill-percentage-fill" data-percentage="90"></div>
+                            </div>
+                        </li>
+                        <li class="skill-item-wrapper">
+                            <span class="skill-name">JavaScript</span>
+                            <div class="skill-percentage-bar">
+                                <div class="skill-percentage-fill" data-percentage="85"></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2 class="section-title scroll-animate">Featured Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card scroll-animate tilt-card">
+                    <div class="project-image">
+                        <img src="elysium-data-nexus.png" alt="Elysium Data Nexus Screenshot" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="project-content">
+                        <h3>Elysium Data Nexus</h3>
+                        <p>An interactive web experience showcasing a sprawling 3D data visualization network, brought to life with futuristic aesthetics and advanced, fluid UI animations.</p>
+                    </div>
+                </div>
+
+                <div class="project-card scroll-animate tilt-card">
+                    <div class="project-image">
+                        <img src="aetheric-explorer.png" alt="Aetheric Explorer Screenshot" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="project-content">
+                        <h3>Aetheric Explorer</h3>
+                        <p>A dynamic 3D web environment allowing users to navigate and interact with abstract futuristic landscapes, powered by cutting-edge animations and responsive UI.</p>
+                    </div>
+                </div>
+
+                <div class="project-card scroll-animate tilt-card">
+                    <div class="project-image">
+                        <img src="synaptic-flowscape.png" alt="Synaptic Flowscape Screenshot" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="project-content">
+                        <h3>Synaptic Flowscape</h3>
+                        <p>An immersive digital canvas where abstract 3D forms evolve through advanced animations, creating a futuristic, interactive visual symphony with seamless UI transitions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title scroll-animate">Get In Touch</h2>
+            <div class="contact-content">
+                <div class="contact-info scroll-animate">
+                    <h3>Let's Build Something Amazing</h3>
+                    <p>
+                        I'm always interested in hearing about new projects and opportunities. 
+                        Whether you have a question or just want to say hi, I'll do my best to get back to you!
+                    </p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <span class="contact-icon">📧</span>
+                            <span>Email: labatabarnabas@gmail.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">📱</span>
+                            <span>+251 95 185 6237</span>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">📍</span>
+                            <span>Bishoftu, Ethiopia</span>
+                        </div>
+                    </div>
+                    
+                    <div class="social-links">
+                        <a href="https://github.com/Barneicode" target="_blank" class="social-link" aria-label="GitHub">
+                            <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                            <span>GitHub</span>
+                        </a>
+                        <a href="https://discordapp.com/users/barnabas0901" target="_blank" class="social-link" aria-label="Discord">
+                            <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.495.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.156 2.42 0 1.333-.946 2.418-2.156 2.418z"/>
+                            </svg>
+                            <span>Discord</span>
+                        </a>
+                        <a href="https://www.instagram.com/barnabas.labata?igsh=MXFyaGk5eWJrcnRwOA==" target="_blank" class="social-link" aria-label="Instagram">
+                            <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                            <span>Instagram</span>
+                        </a>
+                    </div>
+                </div>
+                <form class="contact-form scroll-animate" id="contact-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content scroll-animate">
+                <div class="footer-text">
+                    <p>&copy; 2025 Barnabas Tislabata. All rights reserved.</p>
+                </div>
+                <div class="footer-social">
+                    <a href="#" class="social-link">GitHub</a>
+                    <a href="#" class="social-link">LinkedIn</a>
+                    <a href="#" class="social-link">Twitter</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Pre-loading Animation -->
+    <div class="preloader" id="preloader">
+        <div class="holo-loader"></div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-trail" id="cursor-trail"></div>
+
+    <!-- Animated Background Particles -->
+    <div class="particles" id="particles"></div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init({
+                publicKey: "ZqeSeTciGu-1DQ9Bj",
+            });
+        })();
+    </script>
+    <script src="script.js"></script>
+    <script src="globe-animation.js"></script>
+
+    </script>
+</body>
+</html>
